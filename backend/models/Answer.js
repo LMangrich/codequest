@@ -3,21 +3,21 @@ module.exports = (sequelize, DataTypes) => {
     aluno_id: {
       type: DataTypes.INTEGER,
       references: {
-        model: 'Student',
+        model: 'alunos',
         key: 'id',
       },
     },
     pergunta_id: {
       type: DataTypes.INTEGER,
       references: {
-        model: 'Question',
+        model: 'perguntas',
         key: 'id',
       },
     },
     fase_id: {
       type: DataTypes.INTEGER,
       references: {
-        model: 'Phase',
+        model: 'fases',
         key: 'id',
       },
     },

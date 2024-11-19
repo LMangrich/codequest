@@ -3,7 +3,7 @@ module.exports = (sequelize, DataTypes) => {
     professor_id: {
       type: DataTypes.INTEGER,
       references: {
-        model: 'Teacher',
+        model: 'professores',
         key: 'id',
       },
     },
