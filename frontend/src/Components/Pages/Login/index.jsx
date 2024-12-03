@@ -32,6 +32,7 @@ const LoginPage = () => {
     try {
       const success = await AuthService.login(email, password);
       if (success) {
+        showToast("Login bem sucedido!", "success");
         navigate("/menu");
       } else {
         showToast("Login falhou. Verifique suas credenciais.", "error");

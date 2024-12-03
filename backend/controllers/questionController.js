@@ -1,10 +1,15 @@
 const { Question, Answer } = require("../config/db");
 
 exports.createQuestion = async (req, res) => {
-  const { enunciado, nivel_dificuldade, alternativas } = req.body;
+  const { enunciado, nivel_dificuldade, alternativas, profId } = req.body;
 
   try {
-    const newQuestion = await Question.create({ enunciado, nivel_dificuldade });
+    const newQuestion = await Question.create({
+      enunciado,
+      nivel_dificuldade,
+      professor_id: profId,
+      respondida: false,
+    });
 
     for (const alt of alternativas) {
       await Answer.create({
@@ -24,10 +29,10 @@ exports.createQuestion = async (req, res) => {
 };
 
 exports.getQuestionsByAuthorId = async (req, res) => {
-  const { usuario_id } = req.params;
+  const { id } = req.params;
 
   try {
-    const questions = await Question.findAll({ where: { usuario_id } });
+    const questions = await Question.findAll({ where: { professor_id: id } });
     res.json(questions);
   } catch (error) {
     console.error("Erro ao buscar perguntas:", error);

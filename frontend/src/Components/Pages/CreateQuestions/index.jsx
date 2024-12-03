@@ -11,25 +11,25 @@ import {
   Fade,
   Paper,
 } from "@mui/material";
-import {
-  CheckCircle,
-  RadioButtonUnchecked,
-} from "@mui/icons-material";
+import { CheckCircle, RadioButtonUnchecked } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { QuestionService } from "../../../Services/QuestionService";
 import ArrowBackAndTitle from "../../Common/Title";
+import useToast from "../../../hooks/toast";
+import UserServiceInstance from "../../../Services/UserService";
 
 const CreateQuestion = () => {
   const navigate = useNavigate();
+  const showToast = useToast();
+  // states
   const [questionText, setQuestionText] = useState("");
-  const [difficulty, setDifficulty] = useState(
-    'easy'
-  );
+  const [difficulty, setDifficulty] = useState("iniciantes");
   const [options, setOptions] = useState(
     Array(5).fill({ text: "", isCorrect: false })
   );
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // functions
   const handleOptionChange = (index, text) => {
     setOptions((prev) =>
       prev.map((opt, i) => (i === index ? { ...opt, text } : opt))
@@ -50,10 +50,12 @@ const CreateQuestion = () => {
 
     setIsSubmitting(true);
     try {
+      const currentUser = UserServiceInstance.getCurrentUser();
       const question = {
         questionText,
         difficulty,
         options,
+        profId: currentUser?.id,
       };
 
       await QuestionService.createQuestion(question);
@@ -61,10 +63,12 @@ const CreateQuestion = () => {
       if (createAnother) {
         resetForm();
       } else {
-        navigate(-1);
+        navigate("/menu");
       }
+      showToast("Pergunta criada com sucesso!", "success");
     } catch (error) {
       console.error("Error creating question:", error);
+      showToast("Erro ao criar pergunta", "error");
     } finally {
       setIsSubmitting(false);
     }
@@ -72,7 +76,7 @@ const CreateQuestion = () => {
 
   const resetForm = () => {
     setQuestionText("");
-    setDifficulty('easy');
+    setDifficulty("easy");
     setOptions(Array(5).fill({ text: "", isCorrect: false }));
   };
 
@@ -106,9 +110,9 @@ const CreateQuestion = () => {
               },
             }}
           >
-            <MenuItem value={'easy'}>Fácil</MenuItem>
-            <MenuItem value={'medium'}>Intermediario</MenuItem>
-            <MenuItem value={'hard'}>Dificil</MenuItem>
+            <MenuItem value={"iniciantes"}>Fácil</MenuItem>
+            <MenuItem value={"intermediario"}>Intermediario</MenuItem>
+            <MenuItem value={"avancado"}>Dificil</MenuItem>
           </Select>
         </FormControl>
 

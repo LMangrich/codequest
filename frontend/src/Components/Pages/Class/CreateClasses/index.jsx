@@ -7,8 +7,6 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { ClassService } from "../../../../Services/ClassService";
-// import { type User } from "../../../../models/User";
-// import { type Class } from "../../../../models/Class";
 import UserServiceInstance from "../../../../Services/UserService";
 import ArrowBackAndTitle from "../../../Common/Title";
 
@@ -71,8 +69,8 @@ const CreateClass = () => {
         multiple
         value={selectedStudents}
         options={students}
-        getOptionLabel={(option) => option.name}
-        groupBy={(option) => option.name[0].toUpperCase()}
+        getOptionLabel={(option) => option.nome}
+        groupBy={(option) => option.nome[0].toUpperCase()}
         disabled={loading}
         onChange={(event, newValue) => {
           setSelectedStudents(newValue);
@@ -82,17 +80,14 @@ const CreateClass = () => {
             {...params}
             label="Alunos"
             variant="outlined"
-            InputProps={{
-              ...params.InputProps,
-              endAdornment: (
-                <>
-                  {loading ? (
-                    <CircularProgress color="inherit" size={20} />
-                  ) : null}
-                  {params.InputProps.endAdornment}
-                </>
-              ),
-            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant="outlined"
+                label="Select Students"
+                placeholder="Students"
+              />
+            )}
           />
         )}
         sx={{ marginTop: 2 }}

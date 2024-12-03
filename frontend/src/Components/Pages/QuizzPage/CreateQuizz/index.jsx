@@ -7,11 +7,19 @@ import {
   Autocomplete,
   Switch,
   CircularProgress,
+  Chip,
 } from "@mui/material";
 import { QuestionService } from "../../../../Services/QuestionService";
 import { ClassService } from "../../../../Services/ClassService";
 import useToast from "../../../../hooks/toast";
 import ArrowBackAndTitle from "../../../Common/Title";
+import UserServiceInstance from "../../../../Services/UserService";
+
+const difficultyIcons = {
+  iniciantes: "🟢",
+  intermediario: "🟡",
+  avancado: "🔴",
+};
 
 const CreateQuizz = () => {
   const [loading, setLoading] = useState(true);
@@ -43,7 +51,10 @@ const CreateQuizz = () => {
   useEffect(() => {
     const getQuestions = async () => {
       try {
-        const fetchedQuestions = await QuestionService.getQuestions();
+        const currentUser = UserServiceInstance.getCurrentUser();
+        const fetchedQuestions = await QuestionService.getQuestionsByAuthorId(
+          currentUser?.id
+        );
         setQuestions(fetchedQuestions);
       } catch (error) {
         console.error("Error fetching questions:", error);
@@ -141,9 +152,37 @@ const CreateQuizz = () => {
       {!isRandom && (
         <Autocomplete
           multiple
+          limitTags={5}
           options={questions}
-          getOptionLabel={(option) => option.questionText}
+          getOptionLabel={(option) => option.enunciado}
+          value={selectedQuestions}
           onChange={(event, newValue) => setSelectedQuestions(newValue)}
+          renderOption={(props, option) => (
+            <li {...props} style={{ display: "flex", alignItems: "center" }}>
+              <span style={{ marginRight: 8 }}>
+                {difficultyIcons[option.nivel_dificuldade]}
+              </span>
+              <span style={{ flexGrow: 1, textAlign: "center" }}>
+                {option.enunciado}
+              </span>
+            </li>
+          )}
+          renderTags={(value, getTagProps) =>
+            value.map((option, index) => (
+              <Chip
+                key={option.id}
+                label={
+                  <span style={{ display: "flex", alignItems: "center" }}>
+                    <span style={{ marginRight: 8 }}>
+                      {difficultyIcons[option.nivel_dificuldade]}
+                    </span>
+                    {option.enunciado}
+                  </span>
+                }
+                {...getTagProps({ index })}
+              />
+            ))
+          }
           renderInput={(params) => (
             <TextField
               {...params}
@@ -155,7 +194,6 @@ const CreateQuizz = () => {
           sx={{ mb: 2 }}
         />
       )}
-
       <Button
         fullWidth
         variant="contained"
