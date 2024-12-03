@@ -1,3 +1,4 @@
+// frontend/src/Components/Pages/Class/CreateClasses/index.jsx
 import { useState, useEffect } from "react";
 import {
   Box,
@@ -9,8 +10,12 @@ import {
 import { ClassService } from "../../../../Services/ClassService";
 import UserServiceInstance from "../../../../Services/UserService";
 import ArrowBackAndTitle from "../../../Common/Title";
+import useToast from "../../../../hooks/toast";
 
 const CreateClass = () => {
+  const showToast = useToast();
+
+  //states
   const [className, setClassName] = useState("");
   const [selectedStudents, setSelectedStudents] = useState([]);
   const [students, setStudents] = useState([]);
@@ -21,7 +26,6 @@ const CreateClass = () => {
       setLoading(true);
       try {
         const studentsData = await UserServiceInstance.getAllStudents();
-        console.log("asd", studentsData);
         setStudents(studentsData);
       } catch (error) {
         console.error("Error fetching students:", error);
@@ -34,18 +38,22 @@ const CreateClass = () => {
   }, []);
 
   const handleCreateClass = async () => {
+    console.log("Botão clicado, função handleCreateClass foi chamada");
+    console.log({ className, selectedStudents, loading });
+
     if (!className || selectedStudents.length === 0) return;
-    const userId = UserServiceInstance.getCurrentUser()?.id;
+    const userId = UserServiceInstance.getCurrentUser();
     if (!userId) return;
     const newClass = {
-      name: className,
-      authorId: userId,
-      students: selectedStudents,
+      nome: className,
+      professorId: userId.id,
+      students: selectedStudents.map((student) => student.id),
     };
 
     try {
-      await ClassService.createClass(newClass);
-      // TODO NAVIGATE TO MENU WITH NOTIFICATION
+      const response = await ClassService.createClass(newClass);
+      console.log("Class created:", response);
+      showToast("Turma criada com sucesso", "success");
     } catch (error) {
       console.error("Error creating class:", error);
     }
@@ -80,14 +88,7 @@ const CreateClass = () => {
             {...params}
             label="Alunos"
             variant="outlined"
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                variant="outlined"
-                label="Select Students"
-                placeholder="Students"
-              />
-            )}
+            placeholder="Selecione os alunos"
           />
         )}
         sx={{ marginTop: 2 }}

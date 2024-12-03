@@ -6,6 +6,7 @@ const studentRoutes = require("./routes/studentRoutes");
 const teacherRoutes = require("./routes/teacherRoutes");
 const quizRoutes = require("./routes/quizRoutes");
 const questionRoutes = require("./routes/questionRoutes");
+const classRoutes = require("./routes/classRoutes");
 
 require("./config/db");
 
@@ -17,6 +18,7 @@ app.use("/student", studentRoutes);
 app.use("/teacher", teacherRoutes);
 app.use("/quizzes", quizRoutes);
 app.use("/questions", questionRoutes);
+app.use("/class", classRoutes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

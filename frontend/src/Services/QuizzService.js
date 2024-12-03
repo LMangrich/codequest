@@ -9,6 +9,10 @@ class QuizzService {
     return this.quizzes;
   }
 
+  setQuizzes(quizzes) {
+    this.quizzes = quizzes;
+  }
+
   getAllQuizzes() {
     // To do: Get all quizzes from the server
 
@@ -28,6 +32,16 @@ class QuizzService {
     // To do: Send the new quizz to the server
   }
 
+  static async getQuizzesByClassId(classId) {
+    if (!classId) return [];
+    try {
+      const response = await apiClient.get(`/quizzes/class/${classId}`);
+      return response.data;
+    } catch (error) {
+      throw new Error("Erro ao buscar quizzes da turma");
+    }
+  }
+
   async loadUserQuizzes() {
     const currentUser = UserService.getCurrentUser();
     if (!currentUser) throw new Error("Usuário não está logado");
@@ -39,10 +53,6 @@ class QuizzService {
     } catch (error) {
       throw new Error("Erro ao carregar quizzes");
     }
-  }
-
-  setQuizzes(quizzes) {
-    this.quizzes = quizzes;
   }
 
   static async userHasAccessToQuiz(userId, quizId) {

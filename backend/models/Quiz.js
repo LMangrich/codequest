@@ -15,18 +15,11 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.BOOLEAN,
       allowNull: false,
     },
-    data_inicio: {
-      type: DataTypes.DATE,
-      allowNull: true,
-    },
-    data_fim: {
-      type: DataTypes.DATE,
-      allowNull: true,
-    },
   });
 
   Quiz.associate = (models) => {
     Quiz.belongsTo(models.Teacher, { foreignKey: "professor_id" });
+    Quiz.hasMany(models.Class, { foreignKey: "turma_id" });
   };
 
   return Quiz;

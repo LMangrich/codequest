@@ -5,7 +5,7 @@ module.exports = (sequelize, DataTypes) => {
       usuario_id: {
         type: DataTypes.INTEGER,
         references: {
-          model: "usuarios", // Referência ao modelo 'User'
+          model: "usuarios",
           key: "id",
         },
       },
@@ -18,6 +18,13 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
+      class_student_id: {
+        type: DataTypes.INTEGER,
+        references: {
+          model: "turmas",
+          key: "id",
+        },
+      },
     },
     {
       tableName: "alunos",
@@ -27,6 +34,7 @@ module.exports = (sequelize, DataTypes) => {
 
   Student.associate = (models) => {
     Student.belongsTo(models.User, { foreignKey: "usuario_id" });
+    Student.belongsTo(models.Class, { foreignKey: "turma_id" });
   };
 
   return Student;

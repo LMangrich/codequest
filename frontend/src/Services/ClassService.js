@@ -1,27 +1,44 @@
 export class ClassService {
   static async createClass(newClass) {
-    // TODO BACK
-    console.log("Creating class:", newClass);
-  }
+    console.log("Dados enviados:", newClass);
 
-  static async getQuizzesByClassId(classId) {
-    // TODO BACK - QUIZZ SERVICE
-    return [];
+    try {
+      const response = await apiClient.post(`/class/create`, {
+        newClass,
+      });
+      console.log("Class created:", response.data);
+      return response.data;
+    } catch (error) {
+      throw new Error("Erro ao criar a turma");
+    }
   }
 
   static async getClassesByAuthorId(authorId) {
-    // TODO BACK
     if (!authorId) return [];
-    return [];
+    try {
+      const response = await apiClient.get(`/classes/author/${authorId}`);
+      return response.data;
+    } catch (error) {
+      throw new Error("Erro ao buscar turmas do autor");
+    }
   }
 
   static async getClassesByUserId(userId) {
-    // TODO BACK
     if (!userId) return [];
-    return [];
+    try {
+      const response = await apiClient.get(`/classes/user/${userId}`);
+      return response.data;
+    } catch (error) {
+      throw new Error("Erro ao buscar turmas do usuário");
+    }
   }
 
   static async getClassPerformance(classId) {
-    return [];
+    try {
+      const response = await apiClient.get(`/classes/${classId}/performance`);
+      return response.data;
+    } catch (error) {
+      throw new Error("Erro ao buscar desempenho da turma");
+    }
   }
 }

@@ -68,3 +68,36 @@ exports.getStudentPerformance = async (req, res) => {
     res.status(500).json({ error: "Erro ao buscar desempenho do aluno" });
   }
 };
+
+exports.getClassesByStudentId = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const student = await Student.findByPk(id, {
+      include: Class,
+    });
+
+    if (!student)
+      return res.status(404).json({ error: "Aluno não encontrado" });
+
+    res.json(student);
+  } catch (error) {
+    console.error("Erro ao buscar turmas do aluno:", error);
+    res.status(500).json({ error: "Erro ao buscar turmas do aluno" });
+  }
+};
+
+exports.getStudentByClassId = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const student = await Student.findAll({
+      where: { turma_id: { [Op.contains]: [id] } },
+    });
+
+    res.json(student);
+  } catch (error) {
+    console.error("Erro ao buscar alunos por turma:", error);
+    res.status(500).json({ error: "Erro ao buscar alunos por turma" });
+  }
+};
